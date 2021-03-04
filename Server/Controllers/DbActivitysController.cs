@@ -16,9 +16,11 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
     public class DbActivitysController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public DbActivitysController(ApplicationDbContext context)
+        private readonly IHelperService _service;
+        public DbActivitysController(ApplicationDbContext context, IHelperService service)
         {
             this._context = context;
+            this._service = service;
         }
 
         [HttpGet("[action]")]
@@ -56,13 +58,19 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
         [HttpGet]
         public async Task<IActionResult> Get()
         {
-            var list =  _context.Activitys.Include(activity => activity.Helper).Include(activity => activity.Round);
-            // Ref: https://stackoverflow.com/questions/13510204/json-net-self-referencing-loop-detected :
-            string js = JsonConvert.SerializeObject(list, new JsonSerializerSettings() {
-                ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            });
-            var lst = await list.ToListAsync();
-            return Ok(lst);
+            var activtys = await  _service.GetActivitys();
+            //// Ref: https://stackoverflow.com/questions/13510204/json-net-self-referencing-loop-detected :
+            //string js = JsonConvert.SerializeObject(activtys, new JsonSerializerSettings() {
+            //    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
+            //});
+            return Ok(activtys);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> Post(Activity activity)
+        {
+            await _service.AddActivity(activity);
+            return Ok();
         }
 
         //[HttpGet]

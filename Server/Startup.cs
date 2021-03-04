@@ -44,6 +44,7 @@ namespace EFBlazorBasics_Wasm.Server
                     //options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
+            services.AddTransient<IHelperService, HelperService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
