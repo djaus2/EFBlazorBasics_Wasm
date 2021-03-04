@@ -1,4 +1,4 @@
-# EFBlazorBasics_Wasm
+# EFBlazorBasics_Wasm CRUD Operations
 Exploring actioning Database CRUD using Entity Framework Core with a Blazor WASM app where entity properties are entities themselves.
 
 
