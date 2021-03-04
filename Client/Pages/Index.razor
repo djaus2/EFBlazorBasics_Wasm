@@ -1,0 +1,18 @@
+﻿@page "/"
+
+@inject HttpClient Http
+
+<h1>Hi EF Core DB User!</h1>
+
+Welcome to this app.
+
+<h2>Get some data:</h2>
+<b>Nb:</b> <i>Not needed for first two pages.</i><br />
+<button onclick="PopulateDB">Populate/Re-popluate Database with fresh data</button>
+
+@code{
+    async Task PopulateDB()
+    {
+        var res = await Http.GetAsync("DbActivitys/LoadDb");
+    }
+}

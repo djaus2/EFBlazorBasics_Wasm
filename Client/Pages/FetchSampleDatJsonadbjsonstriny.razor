@@ -1,0 +1,145 @@
+﻿@page "/fetchdatadbjsonstring"
+@using EFBlazorBasics_Wasm.Shared
+@using Newtonsoft.Json
+@inject HttpClient Http
+
+<h1>Activity Data - from Database</h1>
+
+<p>This component demonstrates fetching database data from a http service .</p>
+
+<h1>From JsonString</h1>
+<h2>Uses:</h2>
+<code>var res = await Http.GetAsync("DbActivitys");</code><br />
+<code>if(res.IsSuccessStatusCode) ActivitysJson = await res.Content.ReadAsStringAsync();</code><br/>
+<code>activitys = JsonConvert.DeserializeObject&lt;List&lt;Activity&gt;;&gt;(ActivitysJson).ToArray();</code><br />
+<b>ActivitysJson:</b><div><samp>@ActivitysJson</samp></div>
+<h2>Activities</h2>
+@if (activitys == null)
+{
+    <p><em>Loading Activitys...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Helper</th>
+                <th>Round.No</th>
+                <th>Task</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var activity in activitys)
+            {
+                <tr>
+                    <td>@activity.Id</td>
+                    <td>@activity.Helper.Name</td>
+                    <td>@activity.Round.No</td>
+                    <td>@activity.Task</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h2>Helpers</h2>
+@if (Helpers == null)
+{
+    <p><em>Loading Helpers...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hlpr in Helpers)
+            {
+                <tr>
+                    <td>@hlpr.Id</td>
+                    <td>@hlpr.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h2>Rounds</h2>
+@if (Rounds == null)
+{
+    <p><em>Loading Rounds...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Round No.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var round in Rounds)
+            {
+                <tr>
+                    <td>@round.Id</td>
+                    <td>@round.No</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    private Activity[] activitys;
+    private List<Helper> Helpers;
+    private List<Round> Rounds;
+    private Activity[] activitys2;
+
+    string ActivitysJson="";
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        
+        //Set next to true to get Json string using GetAsync 
+        if (true)
+        {
+            var res2 = await Http.GetAsync("DbActivitys");
+            var rs3 = res2.Content;
+            if (res2.IsSuccessStatusCode)
+                ActivitysJson = await res2.Content.ReadAsStringAsync();
+            activitys = JsonConvert.DeserializeObject<Activity[]>(ActivitysJson).ToArray();
+        }
+        else
+        {
+            // Get data entities direct using GetFromJsonAsync
+            activitys = await Http.GetFromJsonAsync<Activity[]>("DbActivitys");
+        }
+        Helpers = new List<Helper>();
+        Rounds = new List<Round>();
+        foreach (Activity act in activitys)
+        {
+            Helper help = act.Helper;
+            if (help != null)
+            {
+                var hs = from h in Helpers where h.Id == help.Id select h;
+                if (hs.Count()==0)
+                    Helpers.Add(help);
+            }
+            Round round = act.Round;
+            if (round != null)
+            {
+                var rs = from r in Rounds where r.Id == round.Id select r;
+                if (rs.Count()==0)
+                    Rounds.Add(round);
+            }                   
+        }
+    }
+
+}
