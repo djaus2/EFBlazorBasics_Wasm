@@ -6,9 +6,52 @@
 
 Welcome to this app.
 
-<h2>Get some data:</h2>
+<hr />
+<h2>Getting Started-Get some data:</h2>
 <b>Nb:</b> <i>Not needed for first two pages.</i><br />
 <button onclick="PopulateDB">Populate/Re-popluate Database with fresh data</button>
+<hr />
+
+<h1>About</h1>
+See Entity Framework Core functionality Razor pages.<br/>
+Demonstrates CRUD operations in the Helpers App context.<br/>
+Makes use of Blazor Controller on Server in this version of the app.<br />
+<h2>Add <i>Coming</i></h2>
+<b>In this version of the app can add new Activties with a new Helper, Round No and Task.</b><br/>
+<ul>
+    <li>For Add Data the new activity is in-memory only.<br/>Change to Add Data 2 and its not there.</li>
+    <li>For Add Data DbSave it is added to the database along with the new Round and Helper.<br/>Change to Add Data 1 and it's still there.</li>
+</ul>
+<h2>Delete <i>Coming</i></h2>
+<b>Includes Cascade delete</b> and other features.<br/> 
+<ul>
+    <li>Note that deletion of a Round deletes any activity in that round ... <b>Cascade Delete</b></li>
+    <li>Whereas deletion of a Helper does not delete an activity that that Helper has volunteered for.<br/> It nulls that entry in the activity. </li>
+</ul>
+<h2>Updates <i>Coming</i></h2>
+<ul>
+    <li>Can action various styles of updates:
+    <ul>
+        <li>Send a changed property (value or entity) and entity Id, </li>
+        <li>Update and submit the changed entity.</li>
+        <li>Change the entity properties in client and submit but copy the properties to the entity instance in the service.</li>
+    </ul>
+    </li>
+</ul>
+<h2>Database context Updates <i>Coming</i></h2>
+<ul>
+<li> Can toggle whether with db changes, context save changes and state has changed are applied</li>
+<li>Can experiment with whether they are required:
+@*<ul>
+    <li>Enable ContextSaveChangesAsync:&nbsp;;
+    <font color="blue">@contextSaveChangesAsync</font>&nbsp;
+    <button @onclick="@ToggleSaveChanges">Toggle</button></li>
+    <li>Enable MarkContextEntityStateAsChanged:&nbsp;
+    <font color="blue">@markContextEntityStateAsChanged</font>&nbsp;;
+    <button @onclick="@ToggleMark">Toggle</button></li>
+</ul>*@
+</li>
+</ul>
 
 @code{
     async Task PopulateDB()

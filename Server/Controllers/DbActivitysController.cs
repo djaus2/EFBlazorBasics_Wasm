@@ -33,6 +33,13 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
 
         }
 
+        [HttpGet("[action]")]
+        public IActionResult GetSaveChanges()
+        {
+            bool res =  _service.GetContextSaveChangesAsync();
+            return Ok(res);
+        }
+
         //[HttpGet("[action]")]
         //public async Task<IActionResult> Activitys()
         //{
