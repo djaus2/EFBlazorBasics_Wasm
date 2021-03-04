@@ -1,7 +1,7 @@
 # EFBlazorBasics_Wasm
-Exploring using Entity Framework Core with a Blazor WASM app where entity properties are entities themselves.
+Exploring actioning Database CRUD using Entity Framework Core with a Blazor WASM app where entity properties are entities themselves.
 
 
-Under development.
+<b>Under development.</b>
 
-Will mirror 
+Will mirror [djaus2/EFBlazorBasics](https://github.com/djaus2/EFBlazorBasics) which is basic EF CRUD with a a Blazor Server Only app.
