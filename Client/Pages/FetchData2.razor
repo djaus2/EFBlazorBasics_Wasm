@@ -1,0 +1,212 @@
+﻿@page "/fetchdata2"
+@using EFBlazorBasics_Wasm.Shared
+@using Newtonsoft.Json
+@inject HttpClient Http
+
+
+
+<h1>Helper Volunteers - Add Entity</h1>
+
+<p>This component demonstrates adding Db entities locally.</p>
+
+@if (!((Activitys == null)||(Rounds == null)||(Helpers == null)))
+{
+    <EditForm Model="@values">    
+       <table class=" table">
+           <tr>
+                @if (!((string.IsNullOrEmpty(values.newName)) 
+                    || CheckRound()
+                    || (string.IsNullOrEmpty(values.newTask))))
+                {
+                    <td><button @onclick="@AddActivity">Add New Activity locally</button></td>
+                }
+                else {
+                    <td><i>Please new enter Values:</i></td> 
+                }
+           <td>
+               <b><i>Round No:</i></b>&nbsp;<InputNumber @bind-Value="values.newRoundNo" />
+           </td>
+           <td>
+               <b><i>New Helper Name:</i></b>&nbsp;<InputText @bind-Value="values.newName" />
+           </td>
+           <td>
+               <b><i>New Task:</i></b>&nbsp;<InputText @bind-Value="values.newTask" />
+           </td>
+           </tr>
+           <tr>
+               <td>Select unique round number, enter helper name and task then click on left above.<br/>Button to action will then appear.</td>
+           </tr>
+        </table>
+    </EditForm>
+}
+else
+{
+    <p><em>Loading Activities, Rounds and Helpers...</em></p>
+}
+
+<h2>Activitys</h2>
+@if (Activitys == null)
+{
+    <p><em>Loading Activities...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Round</th>
+                <th>Helper</th>
+                <th>Task</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var activity in Activitys)
+            {
+                <tr>
+                    <td>@activity.Id</td>
+                    <td>@activity.Round.No</td>
+                    @if (@activity.Helper != null)
+                    {
+                        <td>@activity.Helper.Name</td>
+                    }
+                    else
+                    {
+                        <td>NULL</td>
+                    }
+                    <td>@activity.Task</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+    
+
+<h2>Helpers</h2>
+@if (Helpers == null)
+{
+    <p><em>Loading Helpers...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hlpr in Helpers)
+            {
+                <tr>
+                    <td>@hlpr.Id</td>
+                    <td>@hlpr.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h2>Rounds</h2>
+@if (Rounds == null)
+{
+    <p><em>Loading Rounds...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Round No.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var round in Rounds)
+            {
+                <tr>
+                    <td>@round.Id</td>
+                    <td>@round.No</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+
+
+
+@code {
+    private List<Activity> Activitys;
+    private List<Helper> Helpers;
+    private List<Round> Rounds;
+
+    public class Values {
+        public int ActivityId { get; set; } = 1;
+        public int RoundId { get; set; } = 1;
+        public int HelperId { get; set; } = 1;
+        public int  newRoundNo { get; set; } = 0;
+        public string newName { get; set; } = "";
+        public string newTask { get; set; } = "";
+    }
+
+
+    public Values values { get; set; } = new Values();
+
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await UpdateData();
+    }
+
+    async Task UpdateData()
+    {
+        // Get data entities direct using GetFromJsonAsync
+        Activitys = (await Http.GetFromJsonAsync<Activity[]>("DbActivitys")).ToList();
+   
+        Helpers = new List<Helper>();
+        Rounds = new List<Round>();
+        foreach (Activity act in Activitys)
+        {
+            Helper help = act.Helper;
+            if (help != null)
+            {
+                var hs = from h in Helpers where h.Id == help.Id select h;
+                if (hs.Count()==0)
+                    Helpers.Add(help);
+            }
+            Round round = act.Round;
+            if (round != null)
+            {
+                var rs = from r in Rounds where r.Id == round.Id select r;
+                if (rs.Count()==0)
+                    Rounds.Add(round);
+            }                   
+        }
+    }
+
+    bool CheckRound()
+    {
+        if (values.newRoundNo < 1)
+            return true;
+        List<int> roundNos = (from r in Rounds select r.No).ToList();
+        return roundNos.Contains(values.newRoundNo);
+    }
+
+    void AddActivity()
+    {
+        Activity activity = new Activity
+        {
+            Helper = new Helper { Name = values.newName },
+            Round = new Round { No = values.newRoundNo },
+            Task = values.newTask
+        };
+
+        Activitys.Add(activity);
+        StateHasChanged();
+    }
+}
+
