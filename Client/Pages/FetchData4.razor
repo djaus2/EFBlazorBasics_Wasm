@@ -1,44 +1,54 @@
-﻿@page "/fetchdata1"
+﻿@page "/fetchdata4"
 @using EFBlazorBasics_Wasm.Shared
 @using Newtonsoft.Json
 @inject HttpClient Http
 
 
-<h1>Helper Volunteers - Cascade Delete</h1>
+<h1>Helper Volunteers - Update Activity - Use Activity Id</h1>
 
-<p>This component demonstrates deleting Db entities via a service.</p>
+<p>This component demonstrates updating a Db Entity via a service by passing entity Id and new property value.</p>
 
 @if (!((Activitys == null)||(Rounds == null)||(Helpers == null)))
 {
-    <EditForm Model="@values">    
-        <table class="table">
-            <tr>
-                <td>
-                    <button @onclick="@DeleteRound">Delete Round</button>
-                &nbsp;
-                    <InputNumber @bind-Value="values.RoundId" />
-                </td>
-            </tr>
-        </table>
-        <table class="table">
-            <tr>
-                <td>
-                    <button @onclick="@DeleteActivity">Delete Activity</button>
-                &nbsp;
-                    <InputNumber @bind-Value="values.ActivityId" />
-                </td>
-            </tr>
-        </table>
-        <table class="table">
-            <tr>
-                <td>
-                    <button @onclick="@DeleteHelper">Delete Helper</button>
-                &nbsp;;
-                    <InputNumber @bind-Value="values.HelperId" />
-                </td>
-            </tr>
-        </table>
-    </EditForm>
+<EditForm Model="@values">    
+    <table class=" table">
+        <tr><large><b>Change an entity property that is of value type.</b></large></tr>
+        <tr>
+            @if (!(string.IsNullOrEmpty(values.newTask)))
+            {
+                <td><button @onclick="@UpdateActivity">Update Activity Task via ActivityId</button></td>
+            }
+            else
+            {
+                <td><i>Please select existing activity Id and enter new Task value:</i></td>
+
+            }
+            <td>
+                <b><i>Select Activity Id:</i></b>&nbsp;<InputNumber @bind-Value="values.ActivityId" />
+            </td>
+            <td>
+                <b><i>Revised Task:</i></b>&nbsp;<InputText @bind-Value="values.newTask" />
+            </td>
+        </tr>
+        <tr><large><b>Change an entity property that is also an entity.</b></large></tr>
+        <tr>
+            @if (CheckHelperId())
+            {
+                <td><button @onclick="@UpdateActivity3">Update Activity Helper via ActivityId</button></td>
+            }
+            else
+            {
+                 <td><i>Please select existing activity Id and its new helper Id:</i></td>
+            }
+            <td>
+                <b><i>Select Activity Id:</i></b>&nbsp;<InputNumber @bind-Value="values.ActivityId" />
+            </td>
+            <td>
+                <b><i>Select Helper Id:</i></b>&nbsp;<InputNumber @bind-Value="values.HelperId" />
+            </td>
+        </tr>
+    </table>
+</EditForm>
 }
 else
 {
@@ -52,7 +62,6 @@ else
 }
 else
 {
-
     <table class="table">
         <thead>
             <tr>
@@ -137,7 +146,6 @@ else
     </table>
 }
 
-
 @code {
     private List<Activity> Activitys;
     private List<Helper> Helpers;
@@ -146,39 +154,15 @@ else
     public class Values {
         public int ActivityId { get; set; } = 1;
         public int RoundId { get; set; } = 1;
-        public int HelperId { get; set; } = 1;
+        public int HelperId { get; set; } = 0;
         public int  newRoundNo { get; set; } = 0;
         public string newName { get; set; } = "";
         public string newTask { get; set; } = "";
     }
 
 
-
     public Values values { get; set; } = new Values();
 
-    private async Task DeleteRound()
-    {
-        await Http.DeleteAsync($"DbRounds/{values.RoundId}");
-        await UpdateData();
-    }
-
-    private async Task DeleteHelper()
-    {
-        await Http.DeleteAsync($"DbHelpers/{values.HelperId}");
-        await UpdateData();
-    }
-
-    private async Task DeleteActivity()
-    {
-        await Http.DeleteAsync($"DbActivitys/{values.ActivityId}");
-        await UpdateData();
-    }
-
-    protected override async Task OnInitializedAsync()
-    {
-        await base.OnInitializedAsync();
-        await UpdateData();
-    }
 
     async Task UpdateData()
     {
@@ -205,4 +189,42 @@ else
             }                   
         }
     }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await UpdateData();
+    }
+
+    bool CheckRound()
+    {
+        if (values.newRoundNo < 1)
+            return true;
+        List<int> roundNos = (from r in Rounds select r.No).ToList();
+        return roundNos.Contains(values.newRoundNo);
+    }
+
+    bool CheckHelperId()
+    {
+        List<int> roundNos = (from r in Helpers select r.Id).ToList();
+        return roundNos.Contains(values.HelperId);
+    }
+
+    async Task UpdateActivity()
+    {
+        //await Http.PutAsJsonAsync($"DbActivitys/Activity-{values.ActivityId}-{values.newTask}");
+        await UpdateData();
+    }
+
+    async Task UpdateActivity3()
+    {
+        Helper helper = (from h in Helpers where h.Id == values.HelperId select h).FirstOrDefault();
+        if (helper != null)
+        {
+            //await Http.UpdateActivityHelper(values.ActivityId, helper);
+            await UpdateData();
+        }
+    }
+
 }
+

@@ -24,9 +24,11 @@ namespace EFBlazorBasics_Wasm.Server.Data
             Task UpdateActivity(Activity activity);
             Task UpdateActivityByCopy(Activity activity);
             Task AddActivitys(List<Activity> activitys);
+
             Task AddActivity(Activity activity);
-            //Task AddRounds(List<Round> rounds);
-            //Task AddHelpers(List<Helper> helpers);
+            Task AddRound(Round round);
+            Task AddHelper(Helper helper);
+
             Task DeleteHelper(int Id);
             Task DeleteRound(int Id);
             Task DeleteActivity(int Id);
@@ -174,7 +176,20 @@ namespace EFBlazorBasics_Wasm.Server.Data
                     await _context.SaveChangesAsync();
             }
 
-            public async Task UpdateActivityTask(int ActivityId, string newTask)
+        public async Task AddHelper(Helper helper)
+        {
+            _context.Helpers.Add(helper);
+            if (contextSaveChangesAsync)
+                await _context.SaveChangesAsync();
+        }
+
+        public async Task AddRound(Round round)
+        {
+            _context.Rounds.Add(round);
+            if (contextSaveChangesAsync)
+                await _context.SaveChangesAsync();
+        }
+        public async Task UpdateActivityTask(int ActivityId, string newTask)
             {
                 var activitys = await GetActivitys();
                 var active = from a in activitys where a.Id == ActivityId select a;

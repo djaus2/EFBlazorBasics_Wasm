@@ -87,22 +87,9 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
 
         [HttpDelete("{Ids}")]
         public async Task<IActionResult> Delete(string Ids)
-        {
-            string[] param = Ids.Split("-");
-            int Id = int.Parse(param[1]);
-            switch (param[0].ToLower())
-            {
-                case "activity":
-                    await _service.DeleteActivity(Id);
-                    break;
-                case "helper":
-                    await _service.DeleteHelper(Id);
-                    break;
-                case "round":
-                    await _service.DeleteRound(Id);
-                    break;
-            }
-            
+        { 
+            int Id = int.Parse(Ids);
+            await _service.DeleteActivity(Id);
             return Ok();
         }
 
