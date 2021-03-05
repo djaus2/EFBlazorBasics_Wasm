@@ -34,33 +34,37 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
         }
 
         [HttpGet("[action]")]
-        public IActionResult GetSaveChanges()
+        public IActionResult GetContextSaveChanges()
         {
-            bool res =  _service.GetContextSaveChangesAsync();
+            bool res = _service.GetContextSaveChangesAsync();
             return Ok(res);
         }
 
-        //[HttpGet("[action]")]
-        //public async Task<IActionResult> Activitys()
-        //{
-        //    var ResultOK = new Microsoft.AspNetCore.Mvc..StatusCodeResult(200); //Ok
-        //    var ResultNOK = new Microsoft.AspNetCore.Mvc.StatusCodeResult(500); //NOk
-        //    await AddSomeData();
-        //    return ResultOK;
+        [HttpGet("[action]")]
+        public IActionResult ToggleContextSaveChanges()
+        {
+            bool res = _service.GetContextSaveChangesAsync();
+            _service.SetContextSaveChangesAsync(!res);
+            res = _service.GetContextSaveChangesAsync();
+            return Ok(res);
+        }
 
-        //}
+        [HttpGet("[action]")]
+        public IActionResult GetMarkContextEntityChanged()
+        {
+            bool res = _service.GetMarkContextEntityStateAsChanged();
+            return Ok(res);
+        }
 
-        //[HttpGet]
-        //public async Task<Activity[]> Get()
-        //{
-        //    var list = await _context.Activitys.ToArrayAsync(); //.Include(activity => activity.Helper).Include(activity => activity.Round).ToArrayAsync();
-        //    return list;
-        //}
+        [HttpGet("[action]")]
+        public IActionResult ToggleMarkContextEntityChanged()
+        {
+            bool res = _service.GetMarkContextEntityStateAsChanged();
+            _service.SetMarkContextEntityStateAsChanged(!res);
+            res = _service.GetMarkContextEntityStateAsChanged();
+            return Ok(res);
+        }
 
-        //public async Task<IActionResult> Index()
-        //{
-        //    return View(await _context.Activitys.ToListAsync());
-        //}
 
         [HttpGet]
         public async Task<IActionResult> Get()
@@ -80,19 +84,28 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             return Ok();
         }
 
-        //[HttpGet]
-        //public async Task<List<Helper>> Get()
-        //{
-        //    var list = await _context.Helpers.ToListAsync<Helper>();
-        //    return list;
-        //}
 
-        //[HttpGet]
-        //public async Task<List<Round>> Get()
-        //{
-        //    var list = await _context.Rounds.ToListAsync<Round>();
-        //    return list;
-        //}
+        [HttpDelete("{Ids}")]
+        public async Task<IActionResult> Delete(string Ids)
+        {
+            string[] param = Ids.Split("-");
+            int Id = int.Parse(param[1]);
+            switch (param[0].ToLower())
+            {
+                case "activity":
+                    await _service.DeleteActivity(Id);
+                    break;
+                case "helper":
+                    await _service.DeleteHelper(Id);
+                    break;
+                case "round":
+                    await _service.DeleteRound(Id);
+                    break;
+            }
+            
+            return Ok();
+        }
+
 
         /// <summary>
         /// Generate some avtivities, with generated rounds and helpers.

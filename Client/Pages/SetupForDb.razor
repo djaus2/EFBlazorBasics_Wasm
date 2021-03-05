@@ -1,0 +1,142 @@
+﻿@page "/setup"
+
+@inject HttpClient Http
+<h1>Setup for Database</h1>
+<h2>Add Initial Data <i><small>Done</small></i></h2>
+
+<h3>Getting Started-Get some data: </h3>
+<b>Nb:</b> <i>Not needed for first two pages.</i><br />
+<button @onclick="PopulateDB">Populate/Re-populate database with fresh data</button>
+<br />
+<br />
+<b>Nb: </b><i>This will also clear the database and generate a fresh set of data.</i>
+<br />
+<p>Status:&nbsp;<em>@msg</em></p>
+
+<h2>Database Context Updates <i><small>Done</small></i></h2>
+<ul>
+<li> DbContext will track changes to entities.</li>
+<li> Can toggle whether with entity changes
+<ul>
+    <li><code>Context.SaveChanges()</code> and</li>
+    <li><code>Context.Entry(Entity).State = EntityState.Modified</code></li>
+</ul>
+are actioned after Entity:
+<ul>
+    <li>Add</li>
+    <li>Delete</li>
+    <li>Update</li>
+    <li>etc.</li>
+</ul>
+</li>
+<li>Can experiment with whether they are required:
+<ul>
+    <li><font color="blue">@contextSaveChangesAsync</font>&nbsp;
+    <button @onclick="@ToggleSaveChanges">Toggle</button>&nbsp;
+    Enable Db <code>Context.SaveChanges()</code
+    </li>
+    <li><font color="blue">@markContextEntityStateHasChanged</font>&nbsp;
+    <button @onclick="@ToggleMark">Toggle</button>&nbsp;
+    Enable Db <code>Context.Entry(Entity).State = EntityState.Modified</code>
+</li>
+</ul>
+</li>
+</ul>
+
+@code {
+    string msg = "";
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await GetSaveChanges();
+        await GetMark();
+    }
+
+    private bool contextSaveChangesAsync { get; set; } 
+    private bool markContextEntityStateHasChanged { get; set; } 
+
+    private async Task PopulateDB()
+    {
+        msg = " Busy ...";
+        var res = await Http.GetAsync("DbActivitys/LoadDb");
+        msg = " Done. Now go to next two pages to see the data.";
+    }
+
+    private async Task ToggleSaveChanges()
+    {
+        var res = await Http.GetAsync("DbActivitys/ToggleContextSaveChanges");
+        if (res.IsSuccessStatusCode)
+        {
+            bool state;
+            string stateStr = await res.Content.ReadAsStringAsync();
+            if( bool.TryParse(stateStr , out state))
+            {
+                contextSaveChangesAsync = state;
+                msg = " Done.";
+            }
+            else
+                msg = "Failed 1";
+        }
+        else
+            msg = "Failed 2";
+    }
+
+    private async Task GetSaveChanges()
+    {
+        msg = " Busy ...";
+        var res = await Http.GetAsync("DbActivitys/GetContextSaveChanges");
+        if (res.IsSuccessStatusCode)
+        {
+            bool state;
+            string stateStr = await res.Content.ReadAsStringAsync();
+            if( bool.TryParse(stateStr , out state))
+            {
+                contextSaveChangesAsync = state;
+                msg = " Done.";
+            }
+            else
+                msg = "Failed 1";
+        }
+        else
+            msg = "Failed 2";
+    }
+
+    private async Task ToggleMark()
+    {
+         
+        var res = await Http.GetAsync("DbActivitys/ToggleMarkContextEntityChanged");
+        if (res.IsSuccessStatusCode)
+        {
+            bool state;
+            string stateStr = await res.Content.ReadAsStringAsync();
+            if( bool.TryParse(stateStr , out state))
+            {
+                markContextEntityStateHasChanged = state;
+                msg = " Done.";
+            }
+            else
+                msg = "Failed 1";
+        }
+        else
+            msg = "Failed 2";
+    }
+
+    private async Task GetMark()
+    {
+        msg = " Busy ...";
+        var res = await Http.GetAsync("DbActivitys/GetMarkContextEntityChanged");
+        if (res.IsSuccessStatusCode)
+        {
+            bool state;
+            if( bool.TryParse( await res.Content.ReadAsStringAsync(), out state))
+            {
+                markContextEntityStateHasChanged = state;
+                msg = " Done.";
+            }
+            else
+                msg = "Failed 1";
+        }
+        else
+            msg = "Failed 2";
+    }
+}

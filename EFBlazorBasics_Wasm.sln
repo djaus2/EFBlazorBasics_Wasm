@@ -3,11 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30803.129
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFBlazorBasics_Wasm.Server", "Server\EFBlazorBasics_Wasm.Server.csproj", "{835D85C7-5696-43E1-B044-B9AF699A63CA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFBlazorBasics_Wasm.Server", "Server\EFBlazorBasics_Wasm.Server.csproj", "{835D85C7-5696-43E1-B044-B9AF699A63CA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFBlazorBasics_Wasm.Client", "Client\EFBlazorBasics_Wasm.Client.csproj", "{12C19CB0-F0C9-4D95-83B4-7A0C6369EF6E}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFBlazorBasics_Wasm.Client", "Client\EFBlazorBasics_Wasm.Client.csproj", "{12C19CB0-F0C9-4D95-83B4-7A0C6369EF6E}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EFBlazorBasics_Wasm.Shared", "Shared\EFBlazorBasics_Wasm.Shared.csproj", "{CF84B995-BCA8-4656-BAA6-3F4171EFEECB}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EFBlazorBasics_Wasm.Shared", "Shared\EFBlazorBasics_Wasm.Shared.csproj", "{CF84B995-BCA8-4656-BAA6-3F4171EFEECB}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

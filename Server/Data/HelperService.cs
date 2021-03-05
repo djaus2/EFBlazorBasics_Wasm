@@ -41,7 +41,7 @@ namespace EFBlazorBasics_Wasm.Server.Data
             }
 
 
-            private bool contextSaveChangesAsync { get; set; } = true;
+            private static bool contextSaveChangesAsync { get; set; } = true;
             public void SetContextSaveChangesAsync(bool save)
             {
                 contextSaveChangesAsync = save;
@@ -50,7 +50,7 @@ namespace EFBlazorBasics_Wasm.Server.Data
             {
                 return contextSaveChangesAsync;
             }
-            private bool markContextEntityStateAsChanged { get; set; } = false;
+            private static bool markContextEntityStateAsChanged { get; set; } = false;
             public void SetMarkContextEntityStateAsChanged(bool mark)
             {
                 markContextEntityStateAsChanged = mark;
@@ -108,6 +108,12 @@ namespace EFBlazorBasics_Wasm.Server.Data
                 Helper helperdb = helpers.FirstOrDefault();
                 if (helperdb != null)
                 {
+                    var activ = from a in  _context.Activitys where a.Helper != null select a;
+                    var activ2 = from a in activ where a.Helper.Id == Id select a;
+                    foreach (var a in activ2)
+                    {
+                        UpdateActivityHelper(a, null);
+                    }
                     _context.Helpers.Remove(helperdb);
                     if (markContextEntityStateAsChanged)
                         _context.Entry(helperdb).State = EntityState.Modified;
@@ -185,10 +191,24 @@ namespace EFBlazorBasics_Wasm.Server.Data
 
             }
 
-            public async Task UpdateActivityHelper(int ActivityId, Helper helper)
+        public void UpdateActivityHelper(Activity activitydb, Helper helper)
+        {
+            if (activitydb != null)
             {
-                var activitys = await GetActivitys();
-                var active = from a in activitys where a.Id == ActivityId select a;
+                activitydb.Helper = helper;
+                _context.Activitys.Update(activitydb);
+                //if (markContextEntityStateAsChanged)
+                //    _context.Entry(activitydb).State = EntityState.Modified;
+                //if (contextSaveChangesAsync)
+                //    await _context.SaveChangesAsync();
+            }
+
+        }
+
+        public async Task UpdateActivityHelper(int ActivityId, Helper helper)
+            {
+                //var activitys = await GetActivitys();
+                var active = from a in _context.Activitys where a.Id == ActivityId select a;
                 Activity activitydb = active.FirstOrDefault();
                 if (activitydb != null)
                 {
