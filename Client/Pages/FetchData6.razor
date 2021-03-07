@@ -1,0 +1,217 @@
+﻿@page "/fetchdata6"
+@using EFBlazorBasics_Wasm.Shared
+@using Newtonsoft.Json
+@inject HttpClient Http
+
+
+<h1>Helper Volunteers - Update Activity - Copy Entity</h1>
+
+<p>This component demonstrates updating a Db Entity via a service that copies the properties of the updated Entity to the db record.</p>
+
+@if (!((Activitys == null)||(Rounds == null)||(Helpers == null)))
+{
+    @if(activity != null)
+    {
+    <EditForm Model="@activity" OnSubmit="UpdateActivityByCopy">  
+   <table class="table">
+        <tr><td colspan=4><large><b>Change entity properties by copying to entity retrieved from database.</b></large></td></tr>
+        <tr>
+            <td colspan=2><button type="submit">Update Activity - Copy Entity (the Activity)</button></td>
+        </tr>
+
+            @if (@Activitys != null)
+            {
+                <tr>
+                <td width="200px">
+                    <b><i>Select Activity Id:</i></b>&nbsp;
+                    <InputSelect @bind-Value="@ActivityId" class="form-control">
+                    @if (Activitys != null)
+                    {
+                        @foreach (var activity in Activitys)
+                        {
+                            <option value="@activity.Id">@activity.Id</option>
+                        }
+                    }
+                    </InputSelect>    
+                </td>
+                @if(@activity != null)
+                {
+                    <td width="200px">
+                     <b><i>&nbsp;Select Round Id:&nbsp;</i></b>
+                     <InputSelect @bind-Value="@RoundId" class="form-control">
+                    @if (Activitys != null)
+                    {
+                        @foreach (var round in Rounds)
+                        {
+                            <option value="@round.Id">@round.Id</option>
+                        }
+                    }
+                    </InputSelect>  
+                    <b><i>&nbsp;Round No.=</i></b>@activity.Round.No
+                    </td>
+                    <td width="200px">
+                    <b><i>&nbsp;Select Helper Id:&nbsp;</i></b>
+                    <InputSelect @bind-Value="@HelperId" class="form-control">
+                    @if (Helpers != null)
+                    {
+                        @foreach (var helperx in Helpers)
+                        {
+                            <option value="@helperx.Id">@helperx.Id</option>
+                        }
+                    }
+                    </InputSelect>
+                    <b><i>&nbsp;Name:&nbsp;</i></b>@activity.Helper.Name
+                    </td>
+                    <td>
+                    <b><i>&nbsp;Task:&nbsp;</i></b><br /><InputText @bind-Value="activity.Task"  />
+                    </td>
+                }
+                </tr>
+           }
+    </table>
+    </EditForm>
+    }
+}
+else
+{
+    <p><em>Loading Activities, Rounds and Helpers...</em></p>
+}
+ 
+                   
+                
+<h2>Activitys</h2>
+@if (Activitys == null)
+{
+    <p><em>Loading Activities...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Round</th>
+                <th>Helper</th>
+                <th>Task</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var activity in Activitys)
+            {
+                <tr>
+                    <td>@activity.Id</td>
+                    <td>@activity.Round.No</td>
+                    @if (@activity.Helper != null)
+                    {
+                        <td>@activity.Helper.Name</td>
+                    }
+                    else
+                    {
+                        <td>NULL</td>
+                    }
+                    <td>@activity.Task</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+    
+
+<h2>Helpers</h2>
+@if (Helpers == null)
+{
+    <p><em>Loading Helpers...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Name</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var hlpr in Helpers)
+            {
+                <tr>
+                    <td>@hlpr.Id</td>
+                    <td>@hlpr.Name</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+<h2>Rounds</h2>
+@if (Rounds == null)
+{
+    <p><em>Loading Rounds...</em></p>
+}
+else
+{
+    <table class="table">
+        <thead>
+            <tr>
+                <th>Id</th>
+                <th>Round No.</th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var round in Rounds)
+            {
+                <tr>
+                    <td>@round.Id</td>
+                    <td>@round.No</td>
+                </tr>
+            }
+        </tbody>
+    </table>
+}
+
+@code {
+    List<int> vals =  new List<int> {1,2,3,4,5};
+    private List<Activity> Activitys;
+    private List<Helper> Helpers;
+    private List<Round> Rounds;
+
+    public Activity activity { get; set; } = null;
+    private int ActivityId
+    {
+        get  { int id = -1; if (activity!= null) id =  activity.Id; return id;}
+        set => activity = Activitys.Single(c => c.Id == value);
+    }
+    private int RoundId
+    {
+        get  { int id = -1; if (activity!= null) if(activity.Round != null) id= activity.Round.Id; return id;}
+        set => activity.Round = Rounds.Single(c => c.Id == value);
+    }
+    private int HelperId
+    {
+        get  { int id = -1; if (activity!= null) if(activity.Helper != null) id= activity.Helper.Id; return id;}
+        set => activity.Helper = Helpers.Single(c => c.Id == value);
+    }
+
+    async Task UpdateData()
+    {
+        Activitys = (await Http.GetFromJsonAsync<Activity[]>("DbActivitys")).ToList();
+        Helpers = (await Http.GetFromJsonAsync<Helper[]>("DbHelpers")).ToList();
+        Rounds = (await Http.GetFromJsonAsync<Round[]>("DbRounds")).ToList();
+    }
+
+    protected override async Task OnInitializedAsync()
+    {
+        await base.OnInitializedAsync();
+        await UpdateData();
+    }
+
+    async Task UpdateActivityByCopy()
+    {
+        var res = await Http.PutAsJsonAsync<Activity>("DbActivitys",activity);
+        if (res.IsSuccessStatusCode){
+            await UpdateData();
+        }
+    }
+}
+
