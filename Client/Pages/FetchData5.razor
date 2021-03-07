@@ -206,7 +206,7 @@ else
         await base.OnInitializedAsync();
         await UpdateData();
     }
-
+    
     async Task UpdateActivity()
     {
         var res = await Http.PutAsJsonAsync<Activity>("DbActivitys",activity);

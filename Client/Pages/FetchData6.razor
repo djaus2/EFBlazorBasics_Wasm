@@ -198,6 +198,7 @@ else
         Activitys = (await Http.GetFromJsonAsync<Activity[]>("DbActivitys")).ToList();
         Helpers = (await Http.GetFromJsonAsync<Helper[]>("DbHelpers")).ToList();
         Rounds = (await Http.GetFromJsonAsync<Round[]>("DbRounds")).ToList();
+        activity = Activitys.FirstOrDefault();
     }
 
     protected override async Task OnInitializedAsync()
@@ -208,7 +209,7 @@ else
 
     async Task UpdateActivityByCopy()
     {
-        var res = await Http.PutAsJsonAsync<Activity>("DbActivitys",activity);
+        var res = await Http.PutAsJsonAsync<Activity>("DbActivitysAlt1",activity);
         if (res.IsSuccessStatusCode){
             await UpdateData();
         }

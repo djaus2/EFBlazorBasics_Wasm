@@ -37,6 +37,13 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             return Ok();
         }
 
+        //[HttpPut]
+        //public async Task<IActionResult> Put(Helper helper)
+        //{
+        //    await _service.UpdateActivityHelper(helper);
+        //    return Ok();
+        //}
+
         [HttpDelete("{Ids}")]
         public async Task<IActionResult> Delete(string Ids)
         {

@@ -13,11 +13,11 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DbActivitysController : ControllerBase
+    public class DbActivitysAlt1Controller : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly IHelperService _service;
-        public DbActivitysController(ApplicationDbContext context, IHelperService service)
+        public DbActivitysAlt1Controller(ApplicationDbContext context, IHelperService service)
         {
             this._context = context;
             this._service = service;
@@ -87,19 +87,16 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
         [HttpPut]
         public async Task<IActionResult> Put(Activity activity)
         {
-            var routes = Request.RouteValues; //.QueryString;
-            var asaf = Request.QueryString;
-            await _service.UpdateActivity(activity);
+            await _service.UpdateActivityByCopy(activity);
             return Ok();
         }
 
-        [HttpGet("[action]")]
-        public IActionResult PutByCopy(Activity activity)
+        [HttpPut("{Ids}")]
+        public async Task<IActionResult> PutHelper(Activity activity,string Ids)
         {
-            bool res = _service.GetMarkContextEntityStateAsChanged();
-            return Ok(res);
+            await _service.UpdateActivityByCopy(activity);
+            return Ok();
         }
-
 
         [HttpDelete("{Ids}")]
         public async Task<IActionResult> Delete(string Ids)

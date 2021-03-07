@@ -250,8 +250,10 @@ namespace EFBlazorBasics_Wasm.Server.Data
 
             public async Task UpdateActivityByCopy(Activity activity)
             {
-                var activitys = await GetActivitys();
-                var active = from a in activitys where a.Id == activity.Id select a;
+            //Nb: For this don't want the includes as it causes tracking collisions.
+            var activitys =  _context.Activitys; //.Include(activity => activity.Helper).Include(activity => activity.Round).ToListAsync();
+
+            var active = from a in activitys where a.Id == activity.Id select a;
                 Activity activitydb = active.FirstOrDefault();
                 if (activitydb != null)
                 {
