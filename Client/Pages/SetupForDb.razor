@@ -29,6 +29,14 @@ are actioned after Entity:
     <li>etc.</li>
 </ul>
 </li>
+<li>Mark Activity helpers as null before deleting a Helper <i>(Default true)</i>.
+<ul>
+    <li>In principle with EF shouldn't be needed, as is part of ReferentialAction settings.</li>
+    <ul><li><code>onDelete: ReferentialAction.Restrict</code>&nbsp;This automatically should null Helper property of the Activity.</li>
+    <li>cf.&nbsp;<code>onDelete: ReferentialAction.Cascade</code>&nbsp;As per rounds, which when deleted delete all Activities with that round.</li></ul>
+    <li>In server app not needed</li>
+    <li>In this app generates error if not enabled.</li>
+</ul></li>
 <li>Can experiment with whether they are required:
 <ul>
     <li><font color="blue">@contextSaveChangesAsync</font>&nbsp;
@@ -38,7 +46,11 @@ are actioned after Entity:
     <li><font color="blue">@markContextEntityStateHasChanged</font>&nbsp;
     <button @onclick="@ToggleMark">Toggle</button>&nbsp;
     Enable Db <code>Context.Entry(Entity).State = EntityState.Modified</code>
-</li>
+    </li>
+    <li><font color="blue">@NullActivityHelpersBeforeDeletingHelper</font>&nbsp;
+    <button @onclick="@ToggleNull">Toggle</button>&nbsp;
+    Enable Db <code>Null Activity Helpers Before Deleting a Helper</code>
+    </li>
 </ul>
 </li>
 </ul>
@@ -50,17 +62,21 @@ are actioned after Entity:
         await base.OnInitializedAsync();
         await GetSaveChanges();
         await GetMark();
+        await GetNull();
     }
 
-    private bool contextSaveChangesAsync { get; set; } 
-    private bool markContextEntityStateHasChanged { get; set; } 
 
     private async Task PopulateDB()
     {
         msg = " Busy ...";
         var res = await Http.GetAsync("DbApp/LoadDb");
+        await GetSaveChanges();
+        await GetMark();
+        await GetNull();
         msg = " Done. Now go to next two pages to see the data.";
     }
+
+    private bool contextSaveChangesAsync { get; set; } 
 
     private async Task ToggleSaveChanges()
     {
@@ -101,6 +117,8 @@ are actioned after Entity:
             msg = "Failed 2";
     }
 
+    private bool markContextEntityStateHasChanged { get; set; } 
+
     private async Task ToggleMark()
     {
          
@@ -131,6 +149,47 @@ are actioned after Entity:
             if( bool.TryParse( await res.Content.ReadAsStringAsync(), out state))
             {
                 markContextEntityStateHasChanged = state;
+                msg = " Done.";
+            }
+            else
+                msg = "Failed 1";
+        }
+        else
+            msg = "Failed 2";
+    }
+
+    private bool NullActivityHelpersBeforeDeletingHelper { get; set; } = true;
+
+    private async Task ToggleNull()
+    {
+         
+        var res = await Http.GetAsync("DbApp/ToggleNullActivityHelpersBeforeDeletingHelper");
+        if (res.IsSuccessStatusCode)
+        {
+            bool state;
+            string stateStr = await res.Content.ReadAsStringAsync();
+            if( bool.TryParse(stateStr , out state))
+            {
+                NullActivityHelpersBeforeDeletingHelper = state;
+                msg = " Done.";
+            }
+            else
+                msg = "Failed 1";
+        }
+        else
+            msg = "Failed 2";
+    }
+
+    private async Task GetNull()
+    {
+        msg = " Busy ...";
+        var res = await Http.GetAsync("DbApp/GetNullActivityHelpersBeforeDeletingHelper");
+        if (res.IsSuccessStatusCode)
+        {
+            bool state;
+            if( bool.TryParse( await res.Content.ReadAsStringAsync(), out state))
+            {
+                NullActivityHelpersBeforeDeletingHelper = state;
                 msg = " Done.";
             }
             else

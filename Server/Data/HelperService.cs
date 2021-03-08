@@ -15,6 +15,9 @@ namespace EFBlazorBasics_Wasm.Server.Data
             bool GetContextSaveChangesAsync();
             void SetMarkContextEntityStateAsChanged(bool mark);
             bool GetMarkContextEntityStateAsChanged();
+            void SetNullActivityHelpersBeforeDeletingHelper(bool makeNull);
+            bool GetNullActivityHelpersBeforeDeletingHelper();
+
             Task<List<Activity>> GetActivitys();
             Task<List<Helper>> GetHelpers();
             Task<List<Round>> GetRounds();
@@ -65,7 +68,17 @@ namespace EFBlazorBasics_Wasm.Server.Data
                 return markContextEntityStateAsChanged;
             }
 
-            public async Task<List<Activity>> GetActivitys()
+            private static bool NullActivityHelpersBeforeDeletingHelper = true;
+            public void SetNullActivityHelpersBeforeDeletingHelper(bool makeNull)
+            {
+                NullActivityHelpersBeforeDeletingHelper = makeNull;
+            }
+            public bool GetNullActivityHelpersBeforeDeletingHelper()
+            {
+                return NullActivityHelpersBeforeDeletingHelper;
+            }
+
+        public async Task<List<Activity>> GetActivitys()
             {
                 var list = await _context.Activitys.Include(activity => activity.Helper).Include(activity => activity.Round).ToListAsync();
                 return list;
@@ -115,9 +128,12 @@ namespace EFBlazorBasics_Wasm.Server.Data
                 {
                     var activ = from a in  _context.Activitys where a.Helper != null select a;
                     var activ2 = from a in activ where a.Helper.Id == Id select a;
-                    foreach (var a in activ2)
+                    if (NullActivityHelpersBeforeDeletingHelper)
                     {
-                        UpdateActivityHelper(a, null);
+                        foreach (var a in activ2)
+                        {
+                            UpdateActivityHelper(a, null);
+                        }
                     }
                     _context.Helpers.Remove(helperdb);
                     if (markContextEntityStateAsChanged)

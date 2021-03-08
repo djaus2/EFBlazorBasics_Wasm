@@ -56,6 +56,23 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             return Ok(res);
         }
 
+
+        [HttpGet("[action]")]
+        public IActionResult GetNullActivityHelpersBeforeDeletingHelper()
+        {
+            bool res = _service.GetNullActivityHelpersBeforeDeletingHelper();
+            return Ok(res);
+        }
+
+        [HttpGet("[action]")]
+        public IActionResult ToggleNullActivityHelpersBeforeDeletingHelper()
+        {
+            bool res = _service.GetNullActivityHelpersBeforeDeletingHelper();
+            _service.SetNullActivityHelpersBeforeDeletingHelper(!res);
+            res = _service.GetNullActivityHelpersBeforeDeletingHelper();
+            return Ok(res);
+        }
+
         [HttpGet("[action]")]
         public async Task<IActionResult> LoadDb()
         {
@@ -78,6 +95,11 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
 
         public async Task AddActivitys(List<Activity> activitys)
         {
+            ///Restore these static variables
+            _service. SetContextSaveChangesAsync(true);
+            _service.SetMarkContextEntityStateAsChanged(false);
+            _service.SetNullActivityHelpersBeforeDeletingHelper(true);
+
             // Clear any records first
             if (_context.Rounds.Count() != 0)
                 _context.Rounds.RemoveRange(_context.Rounds.ToList());
