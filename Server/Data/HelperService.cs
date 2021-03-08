@@ -29,6 +29,9 @@ namespace EFBlazorBasics_Wasm.Server.Data
             Task AddRound(Round round);
             Task AddHelper(Helper helper);
 
+            Task UpdateRound(Round round);
+            Task UpdateHelper(Helper helper);
+
             Task DeleteHelper(int Id);
             Task DeleteRound(int Id);
             Task DeleteActivity(int Id);
@@ -186,6 +189,20 @@ namespace EFBlazorBasics_Wasm.Server.Data
         public async Task AddRound(Round round)
         {
             _context.Rounds.Add(round);
+            if (contextSaveChangesAsync)
+                await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateHelper(Helper helper)
+        {
+            _context.Helpers.Update(helper);
+            if (contextSaveChangesAsync)
+                await _context.SaveChangesAsync();
+        }
+
+        public async Task UpdateRound(Round round)
+        {
+            _context.Rounds.Update(round);
             if (contextSaveChangesAsync)
                 await _context.SaveChangesAsync();
         }

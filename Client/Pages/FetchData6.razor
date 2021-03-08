@@ -209,7 +209,7 @@ else
 
     async Task UpdateActivityByCopy()
     {
-        var res = await Http.PutAsJsonAsync<Activity>("DbActivitysAlt1",activity);
+        var res = await Http.PutAsJsonAsync<Activity>("DbActivityPutByCopy",activity);
         if (res.IsSuccessStatusCode){
             await UpdateData();
         }

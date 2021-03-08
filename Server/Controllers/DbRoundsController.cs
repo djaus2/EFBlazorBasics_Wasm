@@ -30,6 +30,21 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             return Ok(helpers);
         }
 
+        [HttpGet("{Ids}")]
+        public async Task<IActionResult> Get(string Ids)
+        {
+            int Id;
+            if (int.TryParse(Ids, out Id))
+            {
+                var rounds = from r in _context.Rounds where r.Id == Id select r;
+                if (rounds.Count() ==0)
+                    return NotFound();
+                return Ok(await rounds.SingleAsync());
+            }
+            else
+                return StatusCode(400);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post(Round round)
         {
@@ -37,13 +52,25 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             return Ok();
         }
 
+        [HttpPut]
+        public async Task<IActionResult> Put(Round round)
+        {
+            await _service.UpdateRound(round);
+            return Ok();
+        }
+
 
         [HttpDelete("{Ids}")]
         public async Task<IActionResult> Delete(string Ids)
         {
-            int Id = int.Parse(Ids);
-            await _service.DeleteRound(Id);
-            return Ok();
+            int Id;
+            if (int.TryParse(Ids, out Id))
+            {
+                await _service.DeleteRound(Id);
+                return Ok();
+            }
+            else
+                return StatusCode(400);
         }
 
     }

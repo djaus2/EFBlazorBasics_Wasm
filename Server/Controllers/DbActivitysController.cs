@@ -23,49 +23,6 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             this._service = service;
         }
 
-        [HttpGet("[action]")]
-        public async Task<IActionResult> LoadDb()
-        {
-            var ResultOK = new Microsoft.AspNetCore.Mvc.StatusCodeResult(200); //Ok
-            var ResultNOK = new Microsoft.AspNetCore.Mvc.StatusCodeResult(500); //NOk
-            await AddSomeData();
-            return ResultOK;
-
-        }
-
-        [HttpGet("[action]")]
-        public IActionResult GetContextSaveChanges()
-        {
-            bool res = _service.GetContextSaveChangesAsync();
-            return Ok(res);
-        }
-
-        [HttpGet("[action]")]
-        public IActionResult ToggleContextSaveChanges()
-        {
-            bool res = _service.GetContextSaveChangesAsync();
-            _service.SetContextSaveChangesAsync(!res);
-            res = _service.GetContextSaveChangesAsync();
-            return Ok(res);
-        }
-
-        [HttpGet("[action]")]
-        public IActionResult GetMarkContextEntityChanged()
-        {
-            bool res = _service.GetMarkContextEntityStateAsChanged();
-            return Ok(res);
-        }
-
-        [HttpGet("[action]")]
-        public IActionResult ToggleMarkContextEntityChanged()
-        {
-            bool res = _service.GetMarkContextEntityStateAsChanged();
-            _service.SetMarkContextEntityStateAsChanged(!res);
-            res = _service.GetMarkContextEntityStateAsChanged();
-            return Ok(res);
-        }
-
-
         [HttpGet]
         public async Task<IActionResult> Get()
         {
@@ -75,6 +32,19 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             //    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
             //});
             return Ok(activtys);
+        }
+
+        [HttpGet("{Ids}")]
+        public async Task<IActionResult> Get(string Ids)
+        {
+            int Id;
+            if (int.TryParse(Ids, out Id))
+            {
+                var act = from a in _context.Activitys where a.Id == Id select a;
+                return Ok(await act.SingleAsync());
+            }
+            else
+                return StatusCode(400);
         }
 
         [HttpPost]
@@ -93,52 +63,18 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             return Ok();
         }
 
-        [HttpGet("[action]")]
-        public IActionResult PutByCopy(Activity activity)
-        {
-            bool res = _service.GetMarkContextEntityStateAsChanged();
-            return Ok(res);
-        }
-
-
         [HttpDelete("{Ids}")]
         public async Task<IActionResult> Delete(string Ids)
-        { 
-            int Id = int.Parse(Ids);
-            await _service.DeleteActivity(Id);
-            return Ok();
-        }
-
-
-        /// <summary>
-        /// Generate some avtivities, with generated rounds and helpers.
-        /// </summary>
-        string ActivitysJson = "[{\"Round\":{\"No\":1},\"Helper\":{\"Name\":\"John Marshall\"}, \"Task\":\"Shot Put\"},{ \"Round\":{ \"No\":2},\"Helper\":{ \"Name\":\"Sue Burrows\"},\"Task\":\"Marshalling\"},{ \"Round\":{ \"No\":3},\"Helper\":{ \"Name\":\"Jimmy Beans\"},\"Task\":\"Discus\"}]";
-        public async Task AddSomeData()
         {
-            var activitys = JsonConvert.DeserializeObject<List<Activity>>(ActivitysJson);
-            await AddActivitys(activitys);
+            int Id;
+            if (int.TryParse(Ids, out Id))
+            {
+                await _service.DeleteActivity(Id);
+                return Ok();
+            }
+            else
+                return NotFound();
         }
-
-        public async Task AddActivitys(List<Activity> activitys)
-        {
-            // Clear any records first
-            if (_context.Rounds.Count() != 0)
-                _context.Rounds.RemoveRange(_context.Rounds.ToList());
-            if (_context.Activitys.Count() != 0)
-                _context.Activitys.RemoveRange(_context.Activitys.ToList());
-            if (_context.Helpers.Count() != 0)
-                _context.Helpers.RemoveRange(_context.Helpers.ToList());
-            await _context.SaveChangesAsync();
-            // Reset seeds
-            await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT('Rounds', RESEED, 0)");
-            await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT('Helpers', RESEED, 0)");
-            await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT('Activitys', RESEED, 0)");
-            // Save all
-            _context.Activitys.AddRange(activitys);
-
-            //if (contextSaveChangesAsync)
-                await _context.SaveChangesAsync();
-        }
+       
     }
 }

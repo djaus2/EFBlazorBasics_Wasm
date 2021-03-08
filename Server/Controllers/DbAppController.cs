@@ -13,25 +13,16 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
 {
     [ApiController]
     [Route("[controller]")]
-    public class DbActivitysAlt1Controller : ControllerBase
+    public class DbAppController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
         private readonly IHelperService _service;
-        public DbActivitysAlt1Controller(ApplicationDbContext context, IHelperService service)
+        public DbAppController(ApplicationDbContext context, IHelperService service)
         {
             this._context = context;
             this._service = service;
         }
 
-        [HttpGet("[action]")]
-        public async Task<IActionResult> LoadDb()
-        {
-            var ResultOK = new Microsoft.AspNetCore.Mvc.StatusCodeResult(200); //Ok
-            var ResultNOK = new Microsoft.AspNetCore.Mvc.StatusCodeResult(500); //NOk
-            await AddSomeData();
-            return ResultOK;
-
-        }
 
         [HttpGet("[action]")]
         public IActionResult GetContextSaveChanges()
@@ -65,47 +56,15 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             return Ok(res);
         }
 
-
-        [HttpGet]
-        public async Task<IActionResult> Get()
+        [HttpGet("[action]")]
+        public async Task<IActionResult> LoadDb()
         {
-            var activtys = await  _service.GetActivitys();
-            //// Ref: https://stackoverflow.com/questions/13510204/json-net-self-referencing-loop-detected :
-            //string js = JsonConvert.SerializeObject(activtys, new JsonSerializerSettings() {
-            //    ReferenceLoopHandling = Newtonsoft.Json.ReferenceLoopHandling.Ignore
-            //});
-            return Ok(activtys);
-        }
+            var ResultOK = new Microsoft.AspNetCore.Mvc.StatusCodeResult(200); //Ok
+            var ResultNOK = new Microsoft.AspNetCore.Mvc.StatusCodeResult(500); //NOk
+            await AddSomeData();
+            return ResultOK;
 
-        [HttpPost]
-        public async Task<IActionResult> Post(Activity activity)
-        {
-            await _service.AddActivity(activity);
-            return Ok();
         }
-
-        [HttpPut]
-        public async Task<IActionResult> Put(Activity activity)
-        {
-            await _service.UpdateActivityByCopy(activity);
-            return Ok();
-        }
-
-        [HttpPut("{Ids}")]
-        public async Task<IActionResult> PutHelper(Activity activity,string Ids)
-        {
-            await _service.UpdateActivityByCopy(activity);
-            return Ok();
-        }
-
-        [HttpDelete("{Ids}")]
-        public async Task<IActionResult> Delete(string Ids)
-        { 
-            int Id = int.Parse(Ids);
-            await _service.DeleteActivity(Id);
-            return Ok();
-        }
-
 
         /// <summary>
         /// Generate some avtivities, with generated rounds and helpers.

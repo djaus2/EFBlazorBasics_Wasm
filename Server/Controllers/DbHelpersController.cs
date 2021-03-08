@@ -30,6 +30,19 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             return Ok(helpers);
         }
 
+        [HttpGet("{Ids}")]
+        public async Task<IActionResult> Get(string Ids)
+        {
+            int Id;
+            if (int.TryParse(Ids, out Id))
+            {
+                var helpers = from h in _context.Helpers where h.Id == Id select h;
+                return Ok(await helpers.SingleAsync());
+            }
+            else
+                return StatusCode(400);
+        }
+
         [HttpPost]
         public async Task<IActionResult> Post(Helper helper)
         {
@@ -37,19 +50,24 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             return Ok();
         }
 
-        //[HttpPut]
-        //public async Task<IActionResult> Put(Helper helper)
-        //{
-        //    await _service.UpdateActivityHelper(helper);
-        //    return Ok();
-        //}
+        [HttpPut]
+        public async Task<IActionResult> Put(Helper helper)
+        {
+            await _service.UpdateHelper(helper);
+            return Ok();
+        }
 
         [HttpDelete("{Ids}")]
         public async Task<IActionResult> Delete(string Ids)
         {
-            int Id = int.Parse(Ids);
-            await _service.DeleteHelper(Id);
-            return Ok();
+            int Id;
+            if (int.TryParse(Ids, out Id))
+            {
+                await _service.DeleteHelper(Id);
+                return Ok();
+            }
+            else
+                return NotFound();
         }
 
     }

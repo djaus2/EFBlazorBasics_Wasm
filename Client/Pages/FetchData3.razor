@@ -161,8 +161,13 @@ else
 
     async Task UpdateData()
     {
-        // Get data entities direct using GetFromJsonAsync
         Activitys = (await Http.GetFromJsonAsync<Activity[]>("DbActivitys")).ToList();
+        Helpers = (await Http.GetFromJsonAsync<Helper[]>("DbHelpers")).ToList();
+        Rounds = (await Http.GetFromJsonAsync<Round[]>("DbRounds")).ToList();
+        
+        /* Previous version got the Helpers and Rounds 
+           from inspection of Helper and Round properties of Activitys
+        ================================================================
    
         Helpers = new List<Helper>();
         Rounds = new List<Round>();
@@ -182,7 +187,7 @@ else
                 if (rs.Count()==0)
                     Rounds.Add(round);
             }                   
-        }
+        }*/
     }
 
     bool CheckRound()

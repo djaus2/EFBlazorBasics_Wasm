@@ -58,13 +58,13 @@ are actioned after Entity:
     private async Task PopulateDB()
     {
         msg = " Busy ...";
-        var res = await Http.GetAsync("DbActivitys/LoadDb");
+        var res = await Http.GetAsync("DbApp/LoadDb");
         msg = " Done. Now go to next two pages to see the data.";
     }
 
     private async Task ToggleSaveChanges()
     {
-        var res = await Http.GetAsync("DbActivitys/ToggleContextSaveChanges");
+        var res = await Http.GetAsync("DbApp/ToggleContextSaveChanges");
         if (res.IsSuccessStatusCode)
         {
             bool state;
@@ -84,7 +84,7 @@ are actioned after Entity:
     private async Task GetSaveChanges()
     {
         msg = " Busy ...";
-        var res = await Http.GetAsync("DbActivitys/GetContextSaveChanges");
+        var res = await Http.GetAsync("DbApp/GetContextSaveChanges");
         if (res.IsSuccessStatusCode)
         {
             bool state;
@@ -104,7 +104,7 @@ are actioned after Entity:
     private async Task ToggleMark()
     {
          
-        var res = await Http.GetAsync("DbActivitys/ToggleMarkContextEntityChanged");
+        var res = await Http.GetAsync("DbApp/ToggleMarkContextEntityChanged");
         if (res.IsSuccessStatusCode)
         {
             bool state;
@@ -124,7 +124,7 @@ are actioned after Entity:
     private async Task GetMark()
     {
         msg = " Busy ...";
-        var res = await Http.GetAsync("DbActivitys/GetMarkContextEntityChanged");
+        var res = await Http.GetAsync("DbApp/GetMarkContextEntityChanged");
         if (res.IsSuccessStatusCode)
         {
             bool state;
