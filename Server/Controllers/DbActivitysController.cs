@@ -17,10 +17,10 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IHelperService _service;
-        public DbActivitysController(ApplicationDbContext context, IHelperService service)
+        public DbActivitysController(ApplicationDbContext context)
         {
             this._context = context;
-            this._service = service;
+            this._service = new HelperService(context);
         }
 
         [HttpGet]

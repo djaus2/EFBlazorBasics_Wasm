@@ -361,3 +361,7 @@ MigrationBackup/
 
 # Fody - auto-generated XML schema
 FodyWeavers.xsd
+/Client/info.txt
+/Server/Properties/serviceDependencies.EFBlazorBasicsWasm - Web Deploy.json
+/Server/Properties/ServiceDependencies/EFBlazorBasicsWasm - Web Deploy/mssql4.arm.json
+/Server/Properties/ServiceDependencies/EFBlazorBasicsWasm - Web Deploy/profile.arm.json

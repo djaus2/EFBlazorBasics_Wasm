@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "mssql4": {
+      "type": "mssql",
+      "connectionId": "DefaultConnection"
+    }
+  }
+}

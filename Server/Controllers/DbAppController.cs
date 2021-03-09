@@ -17,10 +17,10 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
     {
         private readonly ApplicationDbContext _context;
         private readonly IHelperService _service;
-        public DbAppController(ApplicationDbContext context, IHelperService service)
+        public DbAppController(ApplicationDbContext context)
         {
             this._context = context;
-            this._service = service;
+            this._service = new HelperService(context);
         }
 
 
@@ -99,15 +99,29 @@ namespace EFBlazorBasics_Wasm.Server.Controllers
             _service. SetContextSaveChangesAsync(true);
             _service.SetMarkContextEntityStateAsChanged(false);
             _service.SetNullActivityHelpersBeforeDeletingHelper(true);
-
+           
+            bool wasChanged = false;
             // Clear any records first
             if (_context.Rounds.Count() != 0)
+            {
                 _context.Rounds.RemoveRange(_context.Rounds.ToList());
+                wasChanged = true;
+            }
             if (_context.Activitys.Count() != 0)
+            {
                 _context.Activitys.RemoveRange(_context.Activitys.ToList());
+                wasChanged = true;
+            }
             if (_context.Helpers.Count() != 0)
+            {
                 _context.Helpers.RemoveRange(_context.Helpers.ToList());
-            await _context.SaveChangesAsync();
+                wasChanged = true;
+            }
+            if (wasChanged)
+            {
+                await _context.SaveChangesAsync();
+            }
+          
             // Reset seeds
             await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT('Rounds', RESEED, 0)");
             await _context.Database.ExecuteSqlRawAsync("DBCC CHECKIDENT('Helpers', RESEED, 0)");

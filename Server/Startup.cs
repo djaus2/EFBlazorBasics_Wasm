@@ -36,7 +36,7 @@ namespace EFBlazorBasics_Wasm.Server
             services.AddDbContext<ApplicationDbContext>(options =>
                 options.UseSqlServer(
                     Configuration.GetConnectionString("DefaultConnection")));
-
+ 
             // Ref: https://stackoverflow.com/questions/13510204/json-net-self-referencing-loop-detected :
             services.AddControllers().AddNewtonsoftJson(options =>
                 {
@@ -44,7 +44,7 @@ namespace EFBlazorBasics_Wasm.Server
                     //options.SerializerSettings.ContractResolver = new CamelCasePropertyNamesContractResolver();
                     options.SerializerSettings.ReferenceLoopHandling = ReferenceLoopHandling.Ignore;
                 });
-            services.AddTransient<IHelperService, HelperService>();
+            //services.AddTransient<IHelperService, HelperService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
