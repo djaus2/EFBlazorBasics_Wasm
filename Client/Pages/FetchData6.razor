@@ -6,7 +6,7 @@
 
 <h1>Helper Volunteers - Update Activity - Copy Entity</h1>
 
-<p>This component demonstrates updating a Db Entity via a service that copies the properties of the updated Entity to the db record.</p>
+<p>This component demonstrates updating a Db Entity via a controller service that copies the properties of the updated Entity to the db record.</p>
 
 @if (!((Activitys == null)||(Rounds == null)||(Helpers == null)))
 {
@@ -16,7 +16,7 @@
    <table class="table">
         <tr><td colspan=4><large><b>Change entity properties by copying to entity retrieved from database.</b></large></td></tr>
         <tr>
-            <td colspan=2><button type="submit">Update Activity - Copy Entity (the Activity)</button></td>
+            <td colspan=2><button type="submit">Update Activity - Copy Entity (Activity) properties</button></td>
         </tr>
 
             @if (@Activitys != null)

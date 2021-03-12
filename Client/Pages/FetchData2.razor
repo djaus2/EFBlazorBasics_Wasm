@@ -7,7 +7,7 @@
 
 <h1>Helper Volunteers - Add Entity No Db Save</h1>
 
-<p>This component demonstrates adding Db entities in-memory only. Not written to Db.</p>
+<p>This page demonstrates creating entities in-memory only. Not written to Db.</p>
 
 @if (!((Activitys == null)||(Rounds == null)||(Helpers == null)))
 {
@@ -24,13 +24,13 @@
                     <td><i>Please new enter Values:</i></td> 
                 }
            <td>
-               <b><i>Round No:</i></b>&nbsp;<InputNumber @bind-Value="values.newRoundNo" />
+               <b><i>NEW Round No:</i></b>&nbsp;<InputNumber @bind-Value="values.newRoundNo" />
            </td>
            <td>
-               <b><i>New Helper Name:</i></b>&nbsp;<InputText @bind-Value="values.newName" />
+               <b><i>NEW Helper Name:</i></b>&nbsp;<InputText @bind-Value="values.newName" />
            </td>
            <td>
-               <b><i>New Task:</i></b>&nbsp;<InputText @bind-Value="values.newTask" />
+               <b><i>NEW Task:</i></b>&nbsp;<InputText @bind-Value="values.newTask" />
            </td>
            </tr>
            <tr>
