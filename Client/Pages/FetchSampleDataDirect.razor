@@ -5,11 +5,14 @@
 
 <h1>Sample Activity Data - Direct</h1>
 
-<p>This page demonstrates fetching static sample data from service generated from a json string.</p>
+<p>This page demonstrates fetching static sample data generated from a json string in a Controller on the Server.</p>
+<p>Nb: No database activity here. Data is generated in the Controller direct from the Json String:<br />
+<code>[{"Round":{"No":1},"Helper":{"Name":"John Marshall"}, "Task":"Shot Put"},{ "Round":{ "No":2},"Helper":{ "Name":"Sue Burrows"},"Task":"Marshalling"},{ "Round":{ "No":3},"Helper":{ "Name":"Jimmy Beans"},"Task":"Discus"}]</code></p>
 
-<h1>Direct</h1>
+<h1>Direct Method</h1>
 <h2>Uses:</h2>
 <code>activitys = await Http.GetFromJsonAsync&lt;Activity[]&gt;("SampleActivitys");</code>
+<p>Helpers and Rounds tables are extracted from Activities.</p>
 <h2>Activities</h2>
 @if (activitys == null)
 {

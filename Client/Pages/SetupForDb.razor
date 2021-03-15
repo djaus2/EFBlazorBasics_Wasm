@@ -5,12 +5,13 @@
 <h2>Add Initial Data <i><small>Done</small></i></h2>
 
 <h3>Getting Started-Get some data: </h3>
-<b>Nb:</b> <i>Not needed for first two pages.</i><br />
 <button @onclick="PopulateDB">Populate/Re-populate database with fresh data</button>
 <br />
 <br />
-<b>Nb: </b><i>This will also clear the database and generate a fresh set of data.</i>
+<b>Nb: </b><i>This will also clear the database and generate a fresh set of data from the Json String (and save it):.</i>
 <br />
+<code>[{"Round":{"No":1},"Helper":{"Name":"John Marshall"}, "Task":"Shot Put"},{ "Round":{ "No":2},"Helper":{ "Name":"Sue Burrows"},"Task":"Marshalling"},{ "Round":{ "No":3},"Helper":{ "Name":"Jimmy Beans"},"Task":"Discus"}]</code><br/>
+
 <p>Status:&nbsp;<em>@msg</em></p>
 
 <h2>Database Context Updates <i><small>Done</small></i></h2>

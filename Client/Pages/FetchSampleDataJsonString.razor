@@ -5,14 +5,17 @@
 
 <h1>Sample Activity Data - Json String</h1>
 
-<p>This page demonstrates fetching static sample data from service generated from a json string.</p>
+<p>This page demonstrates fetching static sample data generated from a json string in a Controller on the Server.</p>
+<p>Nb: No database activity here. Data is generated in the Controller direct from the Json String:<br />
+<code>[{"Round":{"No":1},"Helper":{"Name":"John Marshall"}, "Task":"Shot Put"},{ "Round":{ "No":2},"Helper":{ "Name":"Sue Burrows"},"Task":"Marshalling"},{ "Round":{ "No":3},"Helper":{ "Name":"Jimmy Beans"},"Task":"Discus"}]</code></p>
 
-<h1>From JsonString</h1>
+<h1>Download JsonString:</h1>
 <h2>Uses:</h2>
 <code>var res = await Http.GetAsync("SampleActivitys");</code><br />
 <code>if(res.IsSuccessStatusCode) ActivitysJson = await res.Content.ReadAsStringAsync();</code><br/>
 <code>activitys = JsonConvert.DeserializeObject&lt;List&lt;Activity&gt;;&gt;(ActivitysJson).ToArray();</code><br />
-<b>ActivitysJson:</b><div><samp>@ActivitysJson</samp></div>
+<b>Received Activitys Json:</b><div><samp>@ActivitysJson</samp></div>
+<p>Helpers and Rounds tables are extracted from Activities.</p>
 
 <h2>Activities</h2>
 @if (activitys == null)
