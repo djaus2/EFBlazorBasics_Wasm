@@ -1,6 +1,8 @@
 ﻿@page "/setup"
 
 @inject HttpClient Http
+@using EFBlazorBasics_Wasm.Shared
+
 <h1>Setup for Database</h1>
 <h2>Add Initial Data <i><small>Done</small></i></h2>
 
@@ -64,6 +66,8 @@ are actioned after Entity:
         await GetSaveChanges();
         await GetMark();
         await GetNull();
+        var acts = (await Http.GetFromJsonAsync<Activity[]>("DbActivitys")).ToList();;
+        msg = $@" Done. There are now {acts.Count()} activities. Now go to next two pages to see the data.";
     }
 
 
@@ -74,7 +78,9 @@ are actioned after Entity:
         await GetSaveChanges();
         await GetMark();
         await GetNull();
-        msg = " Done. Now go to next two pages to see the data.";
+        var acts = (await Http.GetFromJsonAsync<Activity[]>("DbActivitys")).ToList();;
+        msg = $@" Done. There are now {acts.Count()} activities. Now go to next two pages to see the data.";
+
     }
 
     private bool contextSaveChangesAsync { get; set; } 
